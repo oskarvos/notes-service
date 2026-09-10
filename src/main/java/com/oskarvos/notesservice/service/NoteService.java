@@ -9,13 +9,13 @@ import java.util.UUID;
 
 public interface NoteService {
 
-    NoteResponse create(NoteRequest request);
+    NoteResponse createNote(NoteRequest request);
 
-    NoteResponse getById(UUID id);
+    NoteResponse getNote(UUID id);
 
-    Page<NoteResponse> getAll(String tag, Pageable pageable);
+    Page<NoteResponse> listNotes(String tag, Pageable pageable);
 
-    NoteResponse update(UUID id, NoteRequest request);
+    NoteResponse updateNote(UUID id, NoteRequest request);
 
-    void delete(UUID id);
+    void deleteNote(UUID id);
 }

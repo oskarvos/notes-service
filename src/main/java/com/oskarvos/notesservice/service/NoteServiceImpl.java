@@ -25,21 +25,21 @@ public class NoteServiceImpl implements NoteService {
     private final NoteMapper mapper;
 
     @Override
-    public NoteResponse create(NoteRequest request) {
-        Note saved = repository.save(mapper.toEntity(request));
+    public NoteResponse createNote(NoteRequest request) {
+        Note saved = repository.save(mapper.toNewEntity(request));
         log.info("Создана заметка id={}", saved.getId());
         return mapper.toResponse(saved);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public NoteResponse getById(UUID id) {
+    public NoteResponse getNote(UUID id) {
         return mapper.toResponse(find(id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<NoteResponse> getAll(String tag, Pageable pageable) {
+    public Page<NoteResponse> listNotes(String tag, Pageable pageable) {
         Page<Note> notes = (tag == null || tag.isBlank())
                 ? repository.findAll(pageable)
                 : repository.findByTag(tag, pageable);
@@ -47,15 +47,15 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public NoteResponse update(UUID id, NoteRequest request) {
+    public NoteResponse updateNote(UUID id, NoteRequest request) {
         Note note = find(id);
-        mapper.apply(request, note);
+        mapper.copyRequestInto(request, note);
         log.info("Обновлена заметка id={}", id);
         return mapper.toResponse(note);
     }
 
     @Override
-    public void delete(UUID id) {
+    public void deleteNote(UUID id) {
         repository.delete(find(id));
         log.info("Удалена заметка id={}", id);
     }

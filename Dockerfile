@@ -2,7 +2,7 @@ FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /build
 
 COPY pom.xml .
-RUN mvn -B -q dependency:resolve -DincludeScope=runtime
+RUN mvn -B -q dependency:go-offline -DincludeScope=runtime
 
 COPY src ./src
 RUN mvn -B -q clean package -Dmaven.test.skip=true

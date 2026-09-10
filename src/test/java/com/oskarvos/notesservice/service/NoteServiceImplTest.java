@@ -59,15 +59,15 @@ class NoteServiceImplTest {
         request.setContent("C");
         request.setTags(Set.of("work"));
 
-        when(mapper.toEntity(request)).thenReturn(sample);
+        when(mapper.toNewEntity(request)).thenReturn(sample);
         when(repository.save(sample)).thenReturn(sample);
         when(mapper.toResponse(sample)).thenReturn(
                 new NoteResponse(sample.getId(), "T", "C", sample.getCreatedAt(), Set.of("work")));
 
-        NoteResponse result = service.create(request);
+        NoteResponse result = service.createNote(request);
 
         assertThat(result.title()).isEqualTo("T");
-        verify(mapper).toEntity(request);
+        verify(mapper).toNewEntity(request);
         verify(repository).save(sample);
         verify(mapper).toResponse(sample);
     }
@@ -80,12 +80,12 @@ class NoteServiceImplTest {
         request.setContent("C");
         request.setTags(null);
 
-        when(mapper.toEntity(request)).thenReturn(sample);
+        when(mapper.toNewEntity(request)).thenReturn(sample);
         when(repository.save(sample)).thenReturn(sample);
         when(mapper.toResponse(sample)).thenReturn(
                 new NoteResponse(sample.getId(), "T", "C", sample.getCreatedAt(), Set.of()));
 
-        NoteResponse result = service.create(request);
+        NoteResponse result = service.createNote(request);
 
         assertThat(result.tags()).isEmpty();
         verify(repository).save(sample);
@@ -98,7 +98,7 @@ class NoteServiceImplTest {
         when(mapper.toResponse(sample)).thenReturn(
                 new NoteResponse(sample.getId(), "Title", "Content", sample.getCreatedAt(), Set.of("work")));
 
-        NoteResponse result = service.getById(sample.getId());
+        NoteResponse result = service.getNote(sample.getId());
 
         assertThat(result.id()).isEqualTo(sample.getId());
         assertThat(result.title()).isEqualTo("Title");
@@ -110,7 +110,7 @@ class NoteServiceImplTest {
         UUID id = UUID.randomUUID();
         when(repository.findById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.getById(id))
+        assertThatThrownBy(() -> service.getNote(id))
                 .isInstanceOf(NoteNotFoundException.class)
                 .hasMessageContaining(id.toString());
     }
@@ -123,7 +123,7 @@ class NoteServiceImplTest {
         when(mapper.toResponse(sample)).thenReturn(
                 new NoteResponse(sample.getId(), "Title", "Content", sample.getCreatedAt(), Set.of("work")));
 
-        Page<NoteResponse> result = service.getAll("work", pageable);
+        Page<NoteResponse> result = service.listNotes("work", pageable);
 
         assertThat(result.getContent()).hasSize(1);
         verify(repository).findByTag("work", pageable);
@@ -138,7 +138,7 @@ class NoteServiceImplTest {
         when(mapper.toResponse(sample)).thenReturn(
                 new NoteResponse(sample.getId(), "Title", "Content", sample.getCreatedAt(), Set.of("work")));
 
-        Page<NoteResponse> result = service.getAll(null, pageable);
+        Page<NoteResponse> result = service.listNotes(null, pageable);
 
         assertThat(result.getContent()).hasSize(1);
         verify(repository).findAll(pageable);
@@ -153,7 +153,7 @@ class NoteServiceImplTest {
         when(mapper.toResponse(sample)).thenReturn(
                 new NoteResponse(sample.getId(), "Title", "Content", sample.getCreatedAt(), Set.of("work")));
 
-        service.getAll("", pageable);
+        service.listNotes("", pageable);
 
         verify(repository).findAll(pageable);
         verify(repository, never()).findByTag(anyString(), any(Pageable.class));
@@ -167,7 +167,7 @@ class NoteServiceImplTest {
         when(mapper.toResponse(sample)).thenReturn(
                 new NoteResponse(sample.getId(), "Title", "Content", sample.getCreatedAt(), Set.of("work")));
 
-        service.getAll("   ", pageable);
+        service.listNotes("   ", pageable);
 
         verify(repository).findAll(pageable);
         verify(repository, never()).findByTag(anyString(), any(Pageable.class));
@@ -185,10 +185,10 @@ class NoteServiceImplTest {
         when(mapper.toResponse(sample)).thenReturn(
                 new NoteResponse(id, "New", "New content", sample.getCreatedAt(), Set.of()));
 
-        NoteResponse result = service.update(id, request);
+        NoteResponse result = service.updateNote(id, request);
 
         assertThat(result.title()).isEqualTo("New");
-        verify(mapper).apply(request, sample);
+        verify(mapper).copyRequestInto(request, sample);
         verify(mapper).toResponse(sample);
     }
 
@@ -202,7 +202,7 @@ class NoteServiceImplTest {
         request.setTitle("T");
         request.setContent("C");
 
-        assertThatThrownBy(() -> service.update(id, request))
+        assertThatThrownBy(() -> service.updateNote(id, request))
                 .isInstanceOf(NoteNotFoundException.class);
     }
 
@@ -212,7 +212,7 @@ class NoteServiceImplTest {
         UUID id = sample.getId();
         when(repository.findById(id)).thenReturn(Optional.of(sample));
 
-        service.delete(id);
+        service.deleteNote(id);
 
         verify(repository).delete(sample);
     }
@@ -223,7 +223,7 @@ class NoteServiceImplTest {
         UUID id = UUID.randomUUID();
         when(repository.findById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.delete(id))
+        assertThatThrownBy(() -> service.deleteNote(id))
                 .isInstanceOf(NoteNotFoundException.class);
     }
 }

@@ -25,33 +25,33 @@ public class NoteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public NoteResponse create(@Valid @RequestBody NoteRequest request) {
-        return service.create(request);
+    public NoteResponse createNote(@Valid @RequestBody NoteRequest request) {
+        return service.createNote(request);
     }
 
     @GetMapping("/{id}")
-    public NoteResponse getById(@PathVariable UUID id) {
-        return service.getById(id);
+    public NoteResponse getNoteById(@PathVariable UUID id) {
+        return service.getNote(id);
     }
 
     @GetMapping
-    public Page<NoteResponse> getAll(
+    public Page<NoteResponse> listNotes(
             @RequestParam(required = false)
             @Size(max = 50, message = "Тег не должен превышать 50 символов")
             String tag,
             @PageableDefault(size = 20) Pageable pageable) {
-        return service.getAll(tag, pageable);
+        return service.listNotes(tag, pageable);
     }
 
     @PutMapping("/{id}")
-    public NoteResponse update(@PathVariable UUID id,
-                               @Valid @RequestBody NoteRequest request) {
-        return service.update(id, request);
+    public NoteResponse updateNote(@PathVariable UUID id,
+                                   @Valid @RequestBody NoteRequest request) {
+        return service.updateNote(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable UUID id) {
-        service.delete(id);
+    public void deleteNote(@PathVariable UUID id) {
+        service.deleteNote(id);
     }
 }

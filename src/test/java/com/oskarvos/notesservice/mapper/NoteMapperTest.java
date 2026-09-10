@@ -22,7 +22,7 @@ class NoteMapperTest {
         request.setContent("C");
         request.setTags(Set.of("a", "b"));
 
-        Note note = mapper.toEntity(request);
+        Note note = mapper.toNewEntity(request);
 
         assertThat(note.getTitle()).isEqualTo("T");
         assertThat(note.getContent()).isEqualTo("C");
@@ -37,7 +37,7 @@ class NoteMapperTest {
         request.setContent("C");
         request.setTags(null);
 
-        Note note = mapper.toEntity(request);
+        Note note = mapper.toNewEntity(request);
 
         assertThat(note.getTags()).isEmpty();
     }
@@ -54,7 +54,7 @@ class NoteMapperTest {
         request.setContent("c");
         request.setTags(Set.of("new-tag"));
 
-        mapper.apply(request, note);
+        mapper.copyRequestInto(request, note);
 
         assertThat(note.getTitle()).isEqualTo("new");
         assertThat(note.getTags()).containsExactly("new-tag");
@@ -71,7 +71,7 @@ class NoteMapperTest {
         request.setContent("c");
         request.setTags(null);
 
-        mapper.apply(request, note);
+        mapper.copyRequestInto(request, note);
 
         assertThat(note.getTags()).isEmpty();
     }

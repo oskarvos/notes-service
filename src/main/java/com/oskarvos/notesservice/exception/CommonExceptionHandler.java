@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class CommonExceptionHandler {
 
     private static final String KEY_TIMESTAMP = "timestamp";
     private static final String KEY_STATUS = "status";

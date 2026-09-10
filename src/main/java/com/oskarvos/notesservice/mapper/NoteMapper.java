@@ -10,13 +10,13 @@ import java.util.Set;
 @Component
 public class NoteMapper {
 
-    public Note toEntity(NoteRequest request) {
+    public Note toNewEntity(NoteRequest request) {
         Note note = new Note();
-        apply(request, note);
+        copyRequestInto(request, note);
         return note;
     }
 
-    public void apply(NoteRequest request, Note note) {
+    public void copyRequestInto(NoteRequest request, Note note) {
         note.setTitle(request.getTitle());
         note.setContent(request.getContent());
         note.getTags().clear();
