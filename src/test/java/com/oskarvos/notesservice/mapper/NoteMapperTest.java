@@ -2,10 +2,12 @@ package com.oskarvos.notesservice.mapper;
 
 import com.oskarvos.notesservice.dto.NoteRequest;
 import com.oskarvos.notesservice.dto.NoteResponse;
+import com.oskarvos.notesservice.dto.TagDto;
 import com.oskarvos.notesservice.model.Note;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +22,7 @@ class NoteMapperTest {
         NoteRequest request = new NoteRequest();
         request.setTitle("T");
         request.setContent("C");
-        request.setTags(Set.of("a", "b"));
+        request.setTags(List.of(new TagDto("a"), new TagDto("b")));
 
         Note note = mapper.toNewEntity(request);
 
@@ -52,7 +54,7 @@ class NoteMapperTest {
         NoteRequest request = new NoteRequest();
         request.setTitle("new");
         request.setContent("c");
-        request.setTags(Set.of("new-tag"));
+        request.setTags(List.of(new TagDto("new-tag")));
 
         mapper.copyRequestInto(request, note);
 

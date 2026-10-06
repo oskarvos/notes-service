@@ -2,6 +2,7 @@ package com.oskarvos.notesservice.service;
 
 import com.oskarvos.notesservice.dto.NoteRequest;
 import com.oskarvos.notesservice.dto.NoteResponse;
+import com.oskarvos.notesservice.dto.TagDto;
 import com.oskarvos.notesservice.exception.NoteNotFoundException;
 import com.oskarvos.notesservice.mapper.NoteMapper;
 import com.oskarvos.notesservice.model.Note;
@@ -57,7 +58,7 @@ class NoteServiceImplTest {
         NoteRequest request = new NoteRequest();
         request.setTitle("T");
         request.setContent("C");
-        request.setTags(Set.of("work"));
+        request.setTags(List.of(new TagDto("work")));
 
         when(mapper.toNewEntity(request)).thenReturn(sample);
         when(repository.save(sample)).thenReturn(sample);
